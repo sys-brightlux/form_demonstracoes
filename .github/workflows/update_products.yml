@@ -1,0 +1,46 @@
+name: Atualizar Lista de Produtos (Self-Hosted)
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Roda todo dia às 3 da manhã (horário do runner)
+  workflow_dispatch:
+
+jobs:
+  build-product-list:
+    # A mudança crucial está aqui:
+    runs-on: [self-hosted, python-runner]
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      # Não precisamos mais do 'setup-python' se o Python já estiver
+      # instalado globalmente no runner, mas é uma boa prática mantê-lo
+      # para garantir a versão correta.
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Não precisamos mais instalar o conector a cada execução se ele
+      # já estiver instalado no ambiente do runner.
+      # Se quiser garantir, pode descomentar a linha abaixo.
+      # - name: Garantir que mysql-connector-python está instalado
+      #   run: pip install mysql-connector-python
+
+      - name: Gerar o arquivo products.json
+        # O runner self-hosted recebe os secrets da mesma forma
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: python generate_products.py # Ou python3, dependendo da configuração do seu runner
+
+      - name: Commit e Push do arquivo gerado
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(bot): Atualiza a lista de produtos via Self-Hosted Runner"
+          file_pattern: products.json
+          commit_user_name: GitHub Actions Bot
+          commit_user_email: actions@github.com
