@@ -271,13 +271,20 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(34, 34, 59, 0.5); /* Fundo um pouco mais escuro para foco */
+        background: rgba(34, 34, 59, 0.5);
         display: flex;
-        align-items: center;
-        justify-content: center;
+        
+        /* --- A MUDANÇA CRUCIAL ESTÁ AQUI --- */
+        justify-content: center; /* Mantém centralizado horizontalmente */
+        align-items: flex-start; /* Alinha o modal no TOPO da tela */
+
         z-index: 1000;
-        padding: 1rem; /* Espaçamento das bordas da tela */
+        padding: 1rem;
+        padding-top: 5vh; /* Adiciona um espaço no topo para não colar na barra de status */
         box-sizing: border-box;
+        
+        /* Permite que o próprio overlay role se o conteúdo for muito grande, como em paisagem */
+        overflow-y: auto;
     }
 
     .modal-content {
