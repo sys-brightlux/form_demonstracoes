@@ -7,9 +7,32 @@
     <style>
     body {
         font-family: 'Segoe UI', Arial, sans-serif;
-        background: #f6f8fa;
+        
+        /* --- INÍCIO DA ALTERAÇÃO --- */
+        
+        /* 1. Define a imagem de fundo */
+        background-image: url('logo-brightlux-azul.png'); /* << TROQUE 'background.jpg' PELO NOME DA SUA IMAGEM */
+        
+        /* 2. Garante que a imagem cubra toda a tela */
+        
+        /* 3. Centraliza a imagem */
+        background-position: center center;
+        
+        /* 4. Impede que a imagem se repita */
+        background-repeat: no-repeat;
+        
+        /* 5. Fixa a imagem para que ela não role com a página (efeito parallax) */
+        background-attachment: fixed;
+        
+        /* --- FIM DA ALTERAÇÃO --- */
+
         margin: 0;
-        padding: 0;
+        padding: 20px 0; /* Adiciona um pouco de espaço no topo e no fundo */
+    }
+
+    h1 {
+        text-align: center;
+        color: #0f4d80ff;
     }
 
     form {
@@ -22,6 +45,7 @@
         display: flex;
         flex-direction: column;
         gap: 18px;
+        opacity: 95%;
     }
 
     .form-group {
@@ -76,7 +100,7 @@
     }
 
     button[type="button"]#add-produto {
-        background: #4f8cff;
+        background: rgb(15, 128, 30);
         color: #fff;
         border: none;
         border-radius: 50%;
@@ -108,7 +132,7 @@
     }
 
     button[type="submit"] {
-        background: #22223b;
+        background: #0f4d80ff;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -169,6 +193,124 @@
         background: #f0f6ff;
         color: #22223b;
     }
+
+        /*
+      Substitua todo o seu CSS anterior do .toggle por este bloco.
+    */
+    .toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Centraliza os itens */
+        gap: 1rem; /* Aumenta o espaçamento */
+        cursor: pointer;
+        padding: 8px;
+    }
+
+    .toggle__label {
+        font-weight: 600; /* Um pouco menos pesado que 900 */
+        font-size: 1.1rem; /* Tamanho mais adequado para o formulário */
+        color: #0f4d80ff;
+        transition: opacity 0.4s ease-in-out; /* Adiciona transição suave */
+    }
+
+    /* Estilo inicial: Cliente ativo, Representante inativo */
+    .toggle__label--cliente {
+        opacity: 1;
+    }
+    .toggle__label--representante {
+        opacity: 0.4;
+    }
+    
+    /* Quando o checkbox está marcado (modo Representante) */
+    #checkbox:checked + .toggle .toggle__label--cliente {
+        opacity: 0.4; /* Cliente fica inativo */
+    }
+    #checkbox:checked + .toggle .toggle__label--representante {
+        opacity: 1; /* Representante fica ativo */
+    }
+    
+    .toggle__switch {
+        --bg-toggle: hsl(0, 0%, 100%);
+        --bg-circle: #0f4d80ff; /* Cor #22223b em HSL */
+        --w-toggle-switch: 52px; /* Reduzido para um visual mais clean */
+        --w-h-toggle-circle: 20px;
+        --pd-toggle-switch: 4px;
+        height: 28px;
+        width: var(--w-toggle-switch);
+        background-color: var(--bg-toggle);
+        border: 1px solid #c9c9c9;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        padding: 0 var(--pd-toggle-switch);
+        transition: background-color 500ms, border-color 500ms;
+    }
+
+    .toggle__circle {
+        width: var(--w-h-toggle-circle);
+        height: var(--w-h-toggle-circle);
+        background-color: var(--bg-circle);
+        border-radius: 50%;
+        transition: margin 400ms ease-in-out, background-color 1000ms;
+    }
+
+    #checkbox:checked + .toggle .toggle__circle {
+        margin-left: calc(var(--w-toggle-switch) - (var(--pd-toggle-switch) * 2) - var(--w-h-toggle-circle));
+    }
+
+    #checkbox:checked + .toggle .toggle__switch {
+        /* Cor azul #4f8cff em HSL */
+        --bg-toggle: #0f4d80ff;
+        --bg-circle: hsl(0, 0%, 96%);
+        border-color: #0f4d80ff(220, 100%, 66%);
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(34, 34, 59, 0.5); /* Fundo um pouco mais escuro para foco */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 1rem; /* Espaçamento das bordas da tela */
+        box-sizing: border-box;
+    }
+
+    .modal-content {
+        background: #fff;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 560px; /* Largura máxima em telas grandes */
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        
+        /* Chave para a responsividade de altura e rolagem */
+        max-height: 90vh; /* Altura máxima de 90% da tela */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-content h2 {
+        margin-top: 0;
+        color: #22223b;
+        font-size: 1.2rem;
+        flex-shrink: 0; /* Impede que o título encolha */
+    }
+
+    .modal-content .clausulas-texto {
+        overflow-y: auto; /* Habilita a rolagem APENAS para o texto */
+        margin-bottom: 24px; /* Mais espaço antes do checkbox */
+        padding-right: 10px; /* Espaço para a barra de rolagem não colar no texto */
+    }
+
+    .modal-content .modal-footer {
+        flex-shrink: 0; /* Impede que o rodapé encolha */
+        margin-top: auto; /* Empurra o rodapé para baixo se houver espaço */
+    }
     </style>
 </head>
 <body>
@@ -180,7 +322,19 @@
 
     <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {window.location.href = window.location.pathname + '?status=success'}"></iframe>    
     <form action="https://docs.google.com/forms/d/1pr90R0dg5tZwr1F4MBDPMLuHnJ-TJCNwu5M5E574ntQ/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
-        <h2>Cliente</h2>
+        <h1>Solicitação de Demonstrações</h1>
+         <!-- INÍCIO DO NOVO CÓDIGO -->
+        <div class="form-group">
+            <input type="checkbox" name="entry.2109653665" id="checkbox" hidden="">
+                <label for="checkbox" class="toggle">
+              <span class="toggle__label toggle__label--cliente">Cliente</span>
+              <div class="toggle__switch">
+                <div class="toggle__circle"></div>
+              </div>
+                <span class="toggle__label toggle__label--representante">Representante</span>
+            </label>
+        </div>
+
         <div class="form-group">
             <label for="empresa">Empresa:</label>
             <input type="text" id="empresa" name="entry.939840906" required>
@@ -196,14 +350,14 @@
             <input type="text" id="documento" name="entry.2112486120" required pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}|\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}" title="Digite um CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00)" maxlength="18" oninput="formatarDocumento(this)">
         </div>
 
-        <div class="form-group">
+        <div class="form-group cliente-fields">
             <label for="cliente_final">Cliente Final:</label>
             <input type="text" id="cliente_final" name="entry.223596000" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group cliente-fields">
             <label for="cliente_documento">CNPJ/CPF do Cliente:</label>
-            <input type="text" id="cliente_documento" name="entry.1609051213" required pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}|\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}" title="Digite um CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00) válido" maxlength="18" oninput="formatarDocumento(this)">
+            <input type="text" id="cliente_documento" name="entry.1609051213" required pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}|\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}" title="Digite um CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00)" maxlength="18" oninput="formatarDocumento(this)">
         </div>
 
         <div class="form-group">
@@ -278,15 +432,10 @@
         <button type="submit">Revisar e Enviar</button>
         
         <!-- Modal -->
-        <div id="modal-clausulas" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; overflow-y: auto; background:rgba(34,34,59,0.4); align-items:center; justify-content:center;">
-            <div style="background:#fff; border-radius:10px; max-width:560px; width:90%; margin: 20px 0; padding:32px 24px 20px 24px; box-shadow:0 8px 32px rgba(0,0,0,0.18); position:relative;">
+        <div id="modal-clausulas" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; overflow-y: auto; background:rgba(34,34,59,0.4); align-items:center; justify-content:center;">            
+            <div style="background:#fff; border-radius:10px; max-width:560px; width:90%; margin: 20px 0; padding:32px 24px 20px 24px; box-shadow:0 8px 32px rgba(0,0,0,0.18); position:relative;">            
                 <h2 style="margin-top:0; color:#22223b; font-size:1.2rem;">Declarações e Responsabilidades</h2>
                 <div class="clausulas-texto">
-                    <p><span class="clausula-num">I.</span> O Cliente Final solicita o envio dos produto(s) listado(s) acima em perfeitas condições mediante a NF de demonstração CFOP <strong>xxxx</strong>, os valores dos itens discriminados na NF serão de acordo com a <strong>Tabela de Preços de Demonstração</strong>. O cliente compromete-se a utilizar o(s) produto(s) de forma adequada e a devolvê-lo(s) no prazo máximo de <strong>60 dias</strong> a partir da emissão da NF.</p>
-                    <p><span class="clausula-num">II.</span> O Cliente Final assume a responsabilidade pela guarda e conservação do(s) produto(s) durante o período de demonstração, comprometendo-se a comunicar imediatamente qualquer dano ou perda ao Representante.</p>
-                    <p><span class="clausula-num">III.</span> O Cliente Final autoriza o Representante a retirar o(s) produto(s) no endereço indicado acima, no prazo combinado, ou a devolvê-lo(s) diretamente à empresa, conforme orientação do Representante.</p>
-                    <p><span class="clausula-num">IV.</span> Caso o Cliente Final decida adquirir o(s) produto(s) demonstrado(s), o valor pago será ajustado conforme o valor unitário informado em orçamento, e o produto será considerado parte integrante do pedido de venda.</p>
-                    <p><span class="clausula-num">V.</span> Em caso de deterioração, perda ou não devolução do(s) produto(s), o Cliente Final será responsável pelo pagamento do valor integral do(s) produto(s) constantes em NF, incluindo tributos aplicáveis.</p>
                 </div>
                 <label style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
                     <input type="checkbox" id="concordo-checkbox">
@@ -295,16 +444,69 @@
                 <div style="display:flex; justify-content:flex-end; gap:8px;">
                     <button type="button" id="fechar-modal" style="background:#bfc9d1; color:#22223b; border:none; border-radius:6px; padding:8px 20px; font-size:1rem; font-weight:500; cursor:pointer; min-width:90px;">Cancelar</button>
                     <!-- Este botão agora apenas confirma, o envio real é feito fora do modal -->
-                    <button type="button" id="enviar-btn-modal" disabled style="background:#22223b; color:#fff; border:none; border-radius:6px; padding:8px 20px; font-size:1rem; font-weight:500; cursor:pointer; min-width:90px; opacity: 0.5;">Enviar</button>
+                    <button type="button" id="enviar-btn-modal" disabled style="background:#0f4d80ff; color:#fff; border:none; border-radius:6px; padding:8px 20px; font-size:1rem; font-weight:500; cursor:pointer; min-width:90px; opacity: 0.5;">Enviar</button>
                 </div>
             </div>
         </div>
     </form>
+
+   
     
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
     // --- LÓGICA INDEPENDENTE (RODA IMEDIATAMENTE) ---
+
+    // --- Lógica do Toggle Cliente/Representante ---
+    const toggleCheckbox = document.getElementById('checkbox');
+    const clienteFields = document.querySelectorAll('.cliente-fields');
+    const clienteFinalInput = document.getElementById('cliente_final');
+    const clienteDocumentoInput = document.getElementById('cliente_documento');
+    const clausulasContainer = document.querySelector('.clausulas-texto');
+
+    // Armazena os dois textos das cláusulas para fácil troca
+    const clausulasCliente = `
+        <p><span class="clausula-num">I.</span> O Cliente Final solicita o envio dos produto(s) listado(s) acima em perfeitas condições mediante a NF de demonstração CFOP <strong>xxxx</strong>, os valores dos itens discriminados na NF serão de acordo com a <strong>Tabela de Preços de Demonstração</strong>. O cliente compromete-se a utilizar o(s) produto(s) de forma adequada e a devolvê-lo(s) no prazo máximo de <strong>60 dias</strong> a partir da emissão da NF.</p>
+        <p><span class="clausula-num">II.</span> O Cliente Final assume a responsabilidade pela guarda e conservação do(s) produto(s) durante o período de demonstração, comprometendo-se a comunicar imediatamente qualquer dano ou perda ao Representante.</p>
+        <p><span class="clausula-num">III.</span> O Cliente Final autoriza o Representante a retirar o(s) produto(s) no endereço indicado acima, no prazo combinado, ou a devolvê-lo(s) diretamente à empresa, conforme orientação do Representante.</p>
+        <p><span class="clausula-num">IV.</span> Caso o Cliente Final decida adquirir o(s) produto(s) demonstrado(s), o valor pago será ajustado conforme o valor unitário informado em orçamento, e o produto será considerado parte integrante do pedido de venda.</p>
+        <p><span class="clausula-num">V.</span> Em caso de deterioração, perda ou não devolução do(s) produto(s), o Cliente Final será responsável pelo pagamento do valor integral do(s) produto(s) constantes em NF, incluindo tributos aplicáveis.</p>
+    `;
+
+    const clausulasRepresentante = `
+        <p><span class="clausula-num">I.</span> <strong>Representante</strong> se compromete a devolver o(s) produto(s) em perfeito estado, dentro do prazo máximo de <strong>60 dias</strong>, a contar da data de emissão da Nota fiscal.<br><span class="clausula-sub"><strong>a)</strong></span> Em caso de atraso na devolução, o <strong>Representante</strong> pagará uma multa de 0,33% do valor do produto por dia de atraso.</p>
+        <p><span class="clausula-num">II.</span> Caso o produto seja instalado em um cliente final, o <strong>Representante</strong> deve:<br><span class="clausula-sub"><strong>a)</strong></span> Obter um <strong>Termo de Recebimento assinado pelo cliente</strong> em caso de demonstração para instalação no cliente.<br><span class="clausula-sub"><strong>b)</strong></span> Informar a empresa sobre a instalação, fornecendo os dados do cliente e o prazo estimado para retirada.<br><span class="clausula-sub"><strong>c)</strong></span> Assumir total responsabilidade pela recuperação do produto.</p>
+        <p><span class="clausula-num">III.</span> Em caso de deterioração, perda ou não devolução do produto, o <strong>Representante</strong> será responsável pelo pagamento do valor integral do produto, incluindo ICMS e outros tributos (exceto em Amostras de Demonstração instaladas no cliente, este deverá ser ressarcido pelo próprio cliente).</p>
+        <p><span class="clausula-num">IV.</span> A empresa reserva-se o direito de bloquear novas solicitações de peças de demonstração até a regularização de pendências.</p>
+    `;
+
+    function handleToggleChange() {
+        const isRepresentante = toggleCheckbox.checked;
+
+        if (isRepresentante) {
+            // Modo Representante: Oculta campos do cliente
+            clienteFields.forEach(field => field.style.display = 'none');
+            // IMPORTANTE: Desativa a obrigatoriedade dos campos ocultos
+            clienteFinalInput.required = false;
+            clienteDocumentoInput.required = false;
+            // Troca o texto das cláusulas
+            clausulasContainer.innerHTML = clausulasRepresentante;
+        } else {
+            // Modo Cliente: Mostra campos do cliente
+            clienteFields.forEach(field => field.style.display = 'flex');
+            // IMPORTANTE: Reativa a obrigatoriedade
+            clienteFinalInput.required = true;
+            clienteDocumentoInput.required = true;
+            // Restaura o texto original das cláusulas
+            clausulasContainer.innerHTML = clausulasCliente;
+        }
+    }
+
+    // Adiciona o listener e chama a função uma vez para definir o estado inicial
+    if (toggleCheckbox) {
+        toggleCheckbox.addEventListener('change', handleToggleChange);
+        handleToggleChange(); // Define o estado inicial (Cliente)
+    }
 
     // Exibe a mensagem de sucesso se o parâmetro 'status=success' estiver na URL
     const urlParams = new URLSearchParams(window.location.search);
