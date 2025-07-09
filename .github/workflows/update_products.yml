@@ -1,36 +1,37 @@
-name: Atualizar Dados de Produtos (Self-Hosted) # <-- Nome atualizado para ser mais genérico
+name: Atualizar Dados de Produtos (Self-Hosted)
 
 on:
   schedule:
-    - cron: '0 3 * * *' # Roda todo dia às 3 da manhã (horário do runner)
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 jobs:
   build-product-list:
     runs-on: [self-hosted, python-runner]
 
+    # --- ALTERAÇÃO CRÍTICA AQUI ---
+    # Conceda permissão para o job fazer 'git push' no repositório.
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      # Comentários sobre Python e dependências estão corretos para um self-hosted.
-
-      - name: Ativar venv e gerar o arquivo de dados ofuscado (asset.dat) # <-- Descrição atualizada
+      - name: Ativar venv e gerar o arquivo de dados ofuscado (asset.dat)
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_NAME: ${{ secrets.DB_NAME }}
-        run: | # Usar `|` para múltiplas linhas é uma boa prática
+        run: |
           source /opt/venv_dev/bin/activate
-          python generate_products.py # Certifique-se que este é o nome do seu script atualizado
+          python generate_products.py
 
       - name: Commit e Push do arquivo de dados gerado
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # MUDANÇA CRÍTICA: Atualizar a mensagem de commit
           commit_message: "chore(bot): Atualiza arquivo de dados de produtos (asset.dat)"
-          # MUDANÇA CRÍTICA: Apontar para o novo arquivo gerado
           file_pattern: asset.dat 
           commit_user_name: GitHub Actions Bot
           commit_user_email: actions@github.com
