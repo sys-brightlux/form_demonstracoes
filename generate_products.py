@@ -2,6 +2,7 @@ import mysql.connector
 import os
 import sys
 import json
+import base64  # <--- ADICIONADO: Módulo para codificação Base64
 from decimal import Decimal
 
 # --- CONFIGURAÇÃO ---
@@ -66,11 +67,11 @@ def get_products_by_family(connection, family_name):
 
     except mysql.connector.Error as err:
         print(f"  -> Erro ao buscar dados para a família '{family_name}': {err}")
-        return [] # Retorna lista vazia em caso de erro para não quebrar o processo
+        return []
 
 def main():
     """
-    Função principal que orquestra a busca para todas as famílias e gera o arquivo JSON.
+    Função principal que orquestra a busca, codifica os dados e gera o arquivo final.
     """
     all_products_data = {}
     connection = None
@@ -90,18 +91,33 @@ def main():
         connection = mysql.connector.connect(host=db_host, user=db_user, password=db_password, database=db_name)
         print("Conexão bem-sucedida.")
 
-        # Itera sobre a lista de famílias definida no início do script
         for family in FAMILIES_TO_QUERY:
             print(f"- Processando família: '{family}'...")
             products = get_products_by_family(connection, family)
             all_products_data[family] = products
             print(f"  -> {len(products)} produtos agregados encontrados.")
 
-        # Escreve o resultado final em um arquivo JSON
-        output_filename = 'products.json'
-        print(f"\nGerando arquivo final '{output_filename}'...")
+        # --- ALTERAÇÃO PRINCIPAL AQUI ---
+        # Nome do arquivo de saída ofuscado
+        output_filename = 'asset.dat'
+        print(f"\nCodificando dados em Base64...")
+
+        # 1. Serializa a estrutura de dados Python para uma string JSON compacta
+        json_string = json.dumps(all_products_data, ensure_ascii=False, separators=(',', ':'))
+
+        # 2. Converte a string JSON para bytes (necessário para a codificação Base64)
+        json_bytes = json_string.encode('utf-8')
+
+        # 3. Codifica os bytes usando Base64
+        base64_bytes = base64.b64encode(json_bytes)
+
+        # 4. Converte os bytes Base64 de volta para uma string para poder salvar em um arquivo de texto
+        base64_string = base64_bytes.decode('utf-8')
+
+        print(f"Gerando arquivo de dados ofuscado '{output_filename}'...")
+        # 5. Escreve a string Base64 final no arquivo
         with open(output_filename, 'w', encoding='utf-8') as f:
-            json.dump(all_products_data, f, ensure_ascii=False, indent=2) # indent=2 para um arquivo menor
+            f.write(base64_string)
         
         print(f"Arquivo '{output_filename}' gerado com sucesso!")
 

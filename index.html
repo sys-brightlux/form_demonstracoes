@@ -822,23 +822,38 @@ document.addEventListener('DOMContentLoaded', function() {
     } // Fim da função initializeProductLogic
 
     // --- PONTO DE ENTRADA DO FETCH (roda a lógica de produtos) ---
-    fetch('./products.json')
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            console.log("Lista de produtos carregada!", data);
-            initializeProductLogic(data);
-        })
-        .catch(error => {
-            console.error("Erro ao carregar a lista de produtos:", error);
-            const container = document.getElementById('produtos-container');
-            if(container) {
-                container.innerHTML = `<p style="color: red; padding: 10px; background: #ffebee; border-radius: 4px;">Erro ao carregar a lista de produtos. Por favor, recarregue a página.</p>`;
-                const addBtn = document.getElementById('add-produto');
-                if (addBtn) addBtn.style.display = 'none';
-            }
-        });
+    // Altere o nome do arquivo para o novo, com nome discreto.
+fetch('./asset.dat') 
+    .then(response => {
+        // Esta verificação de erro continua a mesma.
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
+        // MUDANÇA CRÍTICA: Em vez de .json(), pegamos o conteúdo como texto bruto.
+        return response.text(); 
+    })
+    .then(base64String => {
+        // 'base64String' agora contém a longa string codificada do seu arquivo.
+
+        // PASSO 1: Decodificar a string Base64 para uma string JSON normal.
+        const jsonString = atob(base64String);
+
+        // PASSO 2: Converter (parse) a string JSON para um objeto JavaScript.
+        const data = JSON.parse(jsonString);
+
+        // A partir daqui, seu código funciona exatamente como antes!
+        console.log("Lista de produtos decodificada e carregada!", data);
+        initializeProductLogic(data);
+    })
+    .catch(error => {
+        // O tratamento de erro agora pode pegar falhas no fetch, na decodificação ou no parse.
+        console.error("Erro ao carregar ou decodificar a lista de produtos:", error);
+        const container = document.getElementById('produtos-container');
+        if (container) {
+            container.innerHTML = `<p style="color: red; padding: 10px; background: #ffebee; border-radius: 4px;">Erro ao carregar a lista de produtos. Por favor, recarregue a página.</p>`;
+            const addBtn = document.getElementById('add-produto');
+            if (addBtn) addBtn.style.display = 'none';
+        }
+    });
 });
 </script>
