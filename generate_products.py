@@ -2,7 +2,7 @@ import mysql.connector
 import os
 import sys
 import json
-import base64  # <--- ADICIONADO: Módulo para codificação Base64
+import base64
 from decimal import Decimal
 
 # --- CONFIGURAÇÃO ---
@@ -20,14 +20,16 @@ FAMILIES_TO_QUERY = [
 def get_products_by_family(connection, family_name):
     """
     Usa uma conexão existente para buscar uma lista agregada de produtos para uma família.
+    Para a família 'CRYF', adiciona itens especiais com descrição modificada.
     Retorna uma lista de dicionários ou uma lista vazia.
     """
     products_list = []
     try:
+        # ETAPA 1: Executar a consulta normal para obter a lista base de produtos
         cursor = connection.cursor()
         
-        # A consulta final e otimizada que desenvolvemos
-        query = """
+        # Usaremos a consulta de valor mínimo, conforme o exemplo anterior
+        query_min_valor = """
             SELECT
                 MIN(p.Pro_Codigo) AS Representative_Codigo,
                 SUBSTRING(p.Pro_Descricao, 1, LOCATE('W', p.Pro_Descricao)) AS Aggregated_Descricao,
@@ -39,7 +41,7 @@ def get_products_by_family(connection, family_name):
             JOIN (
                 SELECT
                     SUBSTRING(p_inner.Pro_Descricao, 1, LOCATE('W', p_inner.Pro_Descricao)) AS Inner_Agg_Desc,
-                    MAX(tpi_inner.TPrcItm_Valor) AS Max_Valor
+                    MIN(tpi_inner.TPrcItm_Valor) AS Min_Valor
                 FROM produtos AS p_inner
                 JOIN prodreferencia AS pr_inner ON p_inner.Pro_Codigo = pr_inner.Pro_Codigo
                 JOIN tabprecoitem AS tpi_inner ON p_inner.Pro_Codigo = tpi_inner.Pro_Codigo
@@ -48,22 +50,58 @@ def get_products_by_family(connection, family_name):
                     AND pr_inner.Pro_RefSituacao = 'A' AND tpi_inner.TPrc_Codigo = 4 AND tpi_inner.TPrcItm_Valor > 1
                     AND LOCATE('W', p_inner.Pro_Descricao) > 0
                 GROUP BY Inner_Agg_Desc
-            ) AS max_prices
-            ON SUBSTRING(p.Pro_Descricao, 1, LOCATE('W', p.Pro_Descricao)) = max_prices.Inner_Agg_Desc
-            AND p_main.TPrcItm_Valor = max_prices.Max_Valor
+            ) AS min_prices
+            ON SUBSTRING(p.Pro_Descricao, 1, LOCATE('W', p.Pro_Descricao)) = min_prices.Inner_Agg_Desc
+            AND p_main.TPrcItm_Valor = min_prices.Min_Valor
             WHERE pr.Pro_RefSituacao = 'A' AND p.Pro_Descricao LIKE %s AND LOCATE('W', p.Pro_Descricao) > 0
             GROUP BY Aggregated_Descricao, p_main.TPrcItm_Valor
-            ORDER BY Aggregated_Descricao;
+            ORDER BY Aggregated_Descricao;            
         """
         
         search_pattern = f"%{family_name}%"
-        cursor.execute(query, (search_pattern, search_pattern))
+        cursor.execute(query_min_valor, (search_pattern, search_pattern))
 
         for (rep_codigo, agg_descricao, tprit_valor) in cursor:
             price = float(tprit_valor) if isinstance(tprit_valor, Decimal) else tprit_valor
             products_list.append({"code": rep_codigo, "description": agg_descricao, "price": price})
         
         cursor.close()
+
+        # --- ALTERAÇÃO PRINCIPAL AQUI ---
+        # ETAPA 2: Se a família for "CRYF", buscar e adicionar os itens especiais.
+        if family_name == "CRYF":
+            print(f"  -> Aplicando regra especial para a família '{family_name}'...")
+            special_cursor = connection.cursor()
+            
+            # Consulta simples para buscar os itens específicos pelo código
+            query_special_items = """
+                SELECT p.Pro_Codigo, p.Pro_Descricao, tpi.TPrcItm_Valor
+                FROM produtos p
+                JOIN tabprecoitem tpi ON p.Pro_Codigo = tpi.Pro_Codigo
+                WHERE p.Pro_Codigo IN (%s, %s) AND tpi.TPrc_Codigo = 4
+            """
+            
+            # Códigos dos produtos especiais
+            special_item_codes = (3976, 4009)
+            special_cursor.execute(query_special_items, special_item_codes)
+            
+            for (code, original_description, price_decimal) in special_cursor:
+                # Encontra a posição do 'W' para pegar a descrição base
+                w_position = original_description.find('W')
+                if w_position != -1:
+                    # Cria a nova descrição agregada com o sufixo /RGB/
+                    base_description = original_description[:w_position + 1]
+                    new_description = f"{base_description}/RGB/"
+                    
+                    price = float(price_decimal) if isinstance(price_decimal, Decimal) else price_decimal
+                    
+                    special_product = {"code": code, "description": new_description, "price": price}
+                    products_list.append(special_product)
+                    print(f"    -> Adicionado item RGB especial: {special_product}")
+            
+            special_cursor.close()
+        
+        # ETAPA 3: Retornar a lista (modificada ou não)
         return products_list
 
     except mysql.connector.Error as err:
@@ -106,25 +144,16 @@ def main():
             for family, products_list in all_products_data.items()
         }
 
-        # --- ALTERAÇÃO PRINCIPAL AQUI ---
         # Nome do arquivo de saída ofuscado
         output_filename = 'asset.dat'
         print(f"\nCodificando dados em Base64...")
 
-        # 1. Serializa a estrutura de dados Python para uma string JSON compacta
         json_string = json.dumps(filtered_products_data, ensure_ascii=False, separators=(',', ':'))
-
-        # 2. Converte a string JSON para bytes (necessário para a codificação Base64)
         json_bytes = json_string.encode('utf-8')
-
-        # 3. Codifica os bytes usando Base64
         base64_bytes = base64.b64encode(json_bytes)
-
-        # 4. Converte os bytes Base64 de volta para uma string para poder salvar em um arquivo de texto
         base64_string = base64_bytes.decode('utf-8')
 
         print(f"Gerando arquivo de dados ofuscado '{output_filename}'...")
-        # 5. Escreve a string Base64 final no arquivo
         with open(output_filename, 'w', encoding='utf-8') as f:
             f.write(base64_string)
         
@@ -142,3 +171,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+        
