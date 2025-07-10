@@ -13,7 +13,8 @@ FAMILIES_TO_QUERY = [
     "IP69K",
     "LEX100",
     "INFINITY",
-    "CRYF"
+    "CRYF",
+    "URBJET"
 ]
 
 def get_products_by_family(connection, family_name):
@@ -44,7 +45,7 @@ def get_products_by_family(connection, family_name):
                 JOIN tabprecoitem AS tpi_inner ON p_inner.Pro_Codigo = tpi_inner.Pro_Codigo
                 WHERE
                     p_inner.Pro_Descricao LIKE %s
-                    AND pr_inner.Pro_RefSituacao = 'A' AND tpi_inner.TPrc_Codigo = 1 AND tpi_inner.TPrcItm_Valor > 1
+                    AND pr_inner.Pro_RefSituacao = 'A' AND tpi_inner.TPrc_Codigo = 4 AND tpi_inner.TPrcItm_Valor > 1
                     AND LOCATE('W', p_inner.Pro_Descricao) > 0
                 GROUP BY Inner_Agg_Desc
             ) AS max_prices
@@ -97,13 +98,21 @@ def main():
             all_products_data[family] = products
             print(f"  -> {len(products)} produtos agregados encontrados.")
 
+        filtered_products_data = {
+            family: [
+                product for product in products_list
+                if "DRIVER" not in product.get("description", "").upper()
+            ]
+            for family, products_list in all_products_data.items()
+        }
+
         # --- ALTERAÇÃO PRINCIPAL AQUI ---
         # Nome do arquivo de saída ofuscado
         output_filename = 'asset.dat'
         print(f"\nCodificando dados em Base64...")
 
         # 1. Serializa a estrutura de dados Python para uma string JSON compacta
-        json_string = json.dumps(all_products_data, ensure_ascii=False, separators=(',', ':'))
+        json_string = json.dumps(filtered_products_data, ensure_ascii=False, separators=(',', ':'))
 
         # 2. Converte a string JSON para bytes (necessário para a codificação Base64)
         json_bytes = json_string.encode('utf-8')
