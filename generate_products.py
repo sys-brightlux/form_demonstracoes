@@ -14,7 +14,8 @@ FAMILIES_TO_QUERY = [
     "LEX100",
     "INFINITY",
     "CRYF",
-    "URBJET"
+    "URBJET",
+    "LED ORI"
 ]
 
 def get_products_by_family(connection, family_name):
@@ -121,6 +122,7 @@ def main():
         db_user = os.environ.get('DB_USER')
         db_password = os.environ.get('DB_PASSWORD')
         db_name = os.environ.get('DB_NAME')
+
 
         if not all([db_host, db_user, db_password, db_name]):
             print("Erro Crítico: As variáveis de ambiente do banco de dados não foram definidas.")
