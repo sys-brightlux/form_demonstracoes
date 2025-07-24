@@ -15,7 +15,8 @@ FAMILIES_TO_QUERY = [
     "INFINITY",
     "CRYF",
     "URBJET",
-    "LED ORI"
+    "LED ORI",
+    "UFO"
 ]
 
 def get_products_by_family(connection, family_name):
@@ -68,7 +69,6 @@ def get_products_by_family(connection, family_name):
         
         cursor.close()
 
-        # --- ALTERAÇÃO PRINCIPAL AQUI ---
         # ETAPA 2: Se a família for "CRYF", buscar e adicionar os itens especiais.
         if family_name == "CRYF":
             print(f"  -> Aplicando regra especial para a família '{family_name}'...")
@@ -101,6 +101,24 @@ def get_products_by_family(connection, family_name):
                     print(f"    -> Adicionado item RGB especial: {special_product}")
             
             special_cursor.close()
+
+         # ETAPA 2.2: Se a família for "UFO", remover itens que contenham "ALÇA".
+        if family_name == "UFO":
+            print(f"  -> Aplicando filtro 'ALÇA' para a família '{family_name}'...")
+            count_before = len(products_list)
+            
+            # Filtra a lista, mantendo apenas os produtos cuja descrição NÃO contenha "ALÇA"
+            # O .upper() garante que a verificação não diferencia maiúsculas de minúsculas
+            products_list = [
+                product for product in products_list
+                if "ALÇA" not in product.get("description", "").upper()
+            ]
+            
+            count_after = len(products_list)
+            removed_count = count_before - count_after
+            if removed_count > 0:
+                print(f"    -> {removed_count} produto(s) com 'ALÇA' foi(ram) removido(s).")
+        ### FIM DO NOVO ###
         
         # ETAPA 3: Retornar a lista (modificada ou não)
         return products_list
@@ -122,7 +140,6 @@ def main():
         db_user = os.environ.get('DB_USER')
         db_password = os.environ.get('DB_PASSWORD')
         db_name = os.environ.get('DB_NAME')
-
 
         if not all([db_host, db_user, db_password, db_name]):
             print("Erro Crítico: As variáveis de ambiente do banco de dados não foram definidas.")
