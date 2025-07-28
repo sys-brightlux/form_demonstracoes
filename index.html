@@ -675,7 +675,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const produtosContainer = document.getElementById('produtos-container');
         const addBtn = document.getElementById('add-produto');
-        const valorTotalInput = document.getElementById('valor_total');
         const maxProdutos = produtosMap.length;
 
         // --- INÍCIO DA ALTERAÇÃO ---
@@ -703,9 +702,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-
-            // Atualiza o campo de valor total com 2 casas decimais
-            valorTotalInput.value = total.toFixed(2);
         }
         
         // 2. ATUALIZAR O EVENT LISTENER PARA CHAMAR A FUNÇÃO DE CÁLCULO
