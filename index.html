@@ -30,8 +30,12 @@
         padding: 20px 0; /* Adiciona um pouco de espaço no topo e no fundo */
     }
 
-    h1 {
+    h1, h3 {
         text-align: center;
+        color: #0f4d80ff;
+    }
+
+    h2 {
         color: #0f4d80ff;
     }
 
@@ -189,7 +193,7 @@
         font-weight: 500;
     }
     
-    #cliente_email {
+    #cliente_email, #email {
         border: 1.5px solid #4f8cff;
         background: #f0f6ff;
         color: #22223b;
@@ -219,12 +223,12 @@
         opacity: 1;
     }
     .toggle__label--representante {
-        opacity: 0.4;
+        opacity: 0.1;
     }
     
     /* Quando o checkbox está marcado (modo Representante) */
     #checkbox:checked + .toggle .toggle__label--cliente {
-        opacity: 0.4; /* Cliente fica inativo */
+        opacity: 0.1; /* Cliente fica inativo */
     }
     #checkbox:checked + .toggle .toggle__label--representante {
         opacity: 1; /* Representante fica ativo */
@@ -331,8 +335,10 @@
     <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) {window.location.href = window.location.pathname + '?status=success'}"></iframe>    
     <form action="https://docs.google.com/forms/d/1pr90R0dg5tZwr1F4MBDPMLuHnJ-TJCNwu5M5E574ntQ/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
         <h1>Solicitação de Demonstrações</h1>
-         <!-- INÍCIO DO NOVO CÓDIGO -->
+        <!-- INÍCIO DO NOVO CÓDIGO -->
+
         <div class="form-group">
+            <h3>Selecione se você é</h3>
             <input type="checkbox" name="entry.2109653665" id="checkbox" hidden="">
                 <label for="checkbox" class="toggle">
               <span class="toggle__label toggle__label--cliente">Cliente</span>
@@ -343,6 +349,9 @@
             </label>
         </div>
 
+        <hr>
+
+        <h2>Dados do Representante Brightlux</h2>
         <div class="form-group">
             <label for="empresa">Empresa:</label>
             <input type="text" id="empresa" name="entry.939840906" required>
@@ -356,37 +365,6 @@
         <div class="form-group">
             <label for="documento">CNPJ/CPF do Representante Brightlux:</label>
             <input type="text" id="documento" name="entry.2112486120" required pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}|\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}" title="Digite um CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00)" maxlength="18" oninput="formatarDocumento(this)">
-        </div>
-
-        <div class="form-group cliente-fields">
-            <label for="cliente_final">Cliente Final:</label>
-            <input type="text" id="cliente_final" name="entry.223596000" required>
-        </div>
-
-        <div class="form-group cliente-fields">
-            <label for="cliente_documento">CNPJ/CPF do Cliente:</label>
-            <input type="text" id="cliente_documento" name="entry.1609051213" required pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}|\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}" title="Digite um CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00)" maxlength="18" oninput="formatarDocumento(this)">
-        </div>
-
-        <div class="form-group cliente-fields">
-            <label for="nome_responsavel">Nome do responsável no Cliente:</label>
-            <input type="text" id="nome_responsavel" name="entry.737623229" required>
-        </div>
-
-        <div class="form-group cliente-fields">
-            <label for="departamento_responsavel">Departamento do responsável no Cliente:</label>
-            <input type="text" id="departamento_responsavel" name="entry.749836844" required>
-        </div>
-
-        <div class="form-group cliente-fields">
-            <label for="contato_responsavel">Telefone com DDD:</label>
-            <input 
-                type="tel" 
-                id="contato_responsavel" 
-                name="entry.1431555867"
-                placeholder="(11) 99999-9999" 
-                maxlength="15" 
-                required>
         </div>
 
         <div class="form-group">
@@ -420,10 +398,48 @@
         </div>
 
         <div class="form-group">
-            <label for="cliente_email">E-mail:</label>
-            <input type="email" id="cliente_email" name="entry.220162681" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Digite um e-mail válido">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="entry.220162681" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Digite um e-mail válido">
         </div>
 
+        <h2 class="cliente-fields">Dados do Cliente Final</h2>
+        <div class="form-group cliente-fields">
+            <label for="cliente_final">Cliente Final:</label>
+            <input type="text" id="cliente_final" name="entry.223596000" required>
+        </div>
+
+        <div class="form-group cliente-fields">
+            <label for="cliente_documento">CNPJ/CPF do Cliente:</label>
+            <input type="text" id="cliente_documento" name="entry.1609051213" required pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}|\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}" title="Digite um CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00)" maxlength="18" oninput="formatarDocumento(this)">
+        </div>
+
+        <div class="form-group cliente-fields">
+            <label for="nome_responsavel">Nome do responsável no Cliente:</label>
+            <input type="text" id="nome_responsavel" name="entry.737623229" required>
+        </div>
+
+        <div class="form-group cliente-fields">
+            <label for="departamento_responsavel">Departamento do responsável no Cliente:</label>
+            <input type="text" id="departamento_responsavel" name="entry.749836844" required>
+        </div>
+
+        <div class="form-group cliente-fields">
+            <label for="contato_responsavel">Telefone com DDD:</label>
+            <input 
+                type="tel" 
+                id="contato_responsavel" 
+                name="entry.1431555867"
+                placeholder="(11) 99999-9999" 
+                maxlength="15" 
+                required>
+        </div>
+
+        <div class="form-group cliente-fields">
+            <label for="cliente_email">E-mail:</label>
+            <input type="email" id="cliente_email" name="entry.1099198841" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Digite um e-mail válido">
+        </div>
+
+        <h2>Seleção de Produtos</h2>
         <div class="form-group">
             <div class="produto-label-row">
                 <label>Produto(s) Emprestado(s):</label>
