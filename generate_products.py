@@ -16,7 +16,8 @@ FAMILIES_TO_QUERY = [
     "CRYF",
     "URBJET",
     "LED ORI",
-    "UFO"
+    "UFO",
+    "HELYOS"
 ]
 
 def get_products_by_family(connection, family_name):
