@@ -459,6 +459,10 @@
                         <option value="LED ORI">ORNAMENTAIS</option>
                         <option value="UFO">UFO</option>
                         <option value="HELYOS">HELYOS</option>
+                        <option value="LED HTC-PCL">HTC-PCL</option>
+                        <option value="LED HTS">HTS</option>
+                        <option value="LED HTB2">HTB2</option>
+                        <option value="LED GRD">ORI GRD</option>
                     </select>
                     <!-- Os campos de produto e quantidade começam escondidos -->
                     <select name="entry.1785792562" class="produto-select" required style="display: none;"></select>
@@ -688,6 +692,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { produto: "entry.1181593751", quantidade: "entry.951350632" },
             { produto: "entry.129486384", quantidade: "entry.293899450" },
             { produto: "entry.817976781",  quantidade: "entry.706751794" },
+            { produto: "entry.1393840331", quantidade: "entry.1830451432" }
         ];
         
         const produtosContainer = document.getElementById('produtos-container');
@@ -783,7 +788,11 @@ document.addEventListener('DOMContentLoaded', function() {
             "URBJET": "PUBLICAS",
             "LED ORI": "ORNAMENTAIS",
             "UFO": "UFO",
-            "HELYOS": "HELYOS"
+            "HELYOS": "HELYOS",
+            "LED HTC-PCL": "HTC-PCL",
+            "LED HTS": "HTS",
+            "LED HTB2": "HTB2",
+            "LED GRD": "ORI GRD"
         };
 
         function popularFamilias(selectElement) {
