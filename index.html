@@ -549,34 +549,28 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleToggleChange() {
         const isRepresentante = toggleCheckbox.checked;
 
-        // Itera sobre cada grupo de campo do cliente
         clienteFields.forEach(group => {
-            // Encontra o input DENTRO do grupo
-            const input = group.querySelector('input');
+            const inputs = group.querySelectorAll('input, select');
 
             if (isRepresentante) {
-                // Modo Representante: Oculta o grupo e desativa a obrigatoriedade
                 group.style.display = 'none';
-                if (input) {
+                inputs.forEach(input => {
                     input.required = false;
-                }
+                });
             } else {
-                // Modo Cliente: Mostra o grupo e reativa a obrigatoriedade
                 group.style.display = 'flex';
-                if (input) {
+                inputs.forEach(input => {
                     input.required = true;
-                }
+                });
             }
         });
 
-        // A lógica das cláusulas permanece a mesma
         if (isRepresentante) {
             clausulasContainer.innerHTML = clausulasRepresentante;
         } else {
             clausulasContainer.innerHTML = clausulasCliente;
         }
-    }
-
+}
     // Adiciona o listener e chama a função uma vez para definir o estado inicial
     if (toggleCheckbox) {
         toggleCheckbox.addEventListener('change', handleToggleChange);
