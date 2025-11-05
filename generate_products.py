@@ -107,6 +107,34 @@ def get_products_by_family(connection, family_name):
             
             special_cursor.close()
 
+        if family_name == "LED ORI":
+            print(f"  -> Aplicando regra especial para a família '{family_name}'...")
+            special_cursor = connection.cursor()
+            
+            # Consulta para buscar os itens específicos pelo código e agregar a descrição
+            query_special_items = """
+                SELECT 
+                    p.Pro_Codigo, 
+                    SUBSTRING(p.Pro_Descricao, 1, LOCATE('W', p.Pro_Descricao)) AS Aggregated_Descricao,
+                    tpi.TPrcItm_Valor
+                FROM produtos p
+                JOIN tabprecoitem tpi ON p.Pro_Codigo = tpi.Pro_Codigo
+                WHERE p.Pro_Codigo IN (%s, %s, %s) AND tpi.TPrc_Codigo = 4
+            """
+            
+            # Códigos dos produtos especiais
+            special_item_codes = (4449, 4450, 4451)
+            special_cursor.execute(query_special_items, special_item_codes)
+            
+            for (code, agg_description, price_decimal) in special_cursor:
+                if agg_description: # Adiciona apenas se a descrição foi agregada (encontrou 'W')
+                    price = float(price_decimal) if isinstance(price_decimal, Decimal) else price_decimal
+                    
+                    special_product = {"code": code, "description": agg_description, "price": price}
+                    products_list.append(special_product)
+                    print(f"    -> Adicionado item especial: {special_product}")
+            
+
          # ETAPA 2.2: Se a família for "UFO", remover itens que contenham "ALÇA".
         if family_name == "UFO":
             print(f"  -> Aplicando filtro 'ALÇA' para a família '{family_name}'...")
