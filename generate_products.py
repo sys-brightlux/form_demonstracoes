@@ -12,7 +12,7 @@ FAMILIES_TO_QUERY = [
     "LED HBMI",
     "IP69K",
     "LEX100",
-    "INFINITY",
+    #"INFINITY",
     "CRYF",
     "URBJET",
     "LED ORI",
