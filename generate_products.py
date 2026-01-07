@@ -21,7 +21,10 @@ FAMILIES_TO_QUERY = [
     "LED HTC-PCL",
     "LED HTS",
     "LED HTB2",
-    "LED GRD"
+    "LED GRD",
+    "HERM",
+    "STREET",
+    "MOD FIT"
 ]
 
 def get_products_by_family(connection, family_name):
@@ -138,7 +141,6 @@ def get_products_by_family(connection, family_name):
          # ETAPA 2.2: Se a família for "UFO", remover itens que contenham "ALÇA".
         if family_name == "UFO":
             print(f"  -> Aplicando filtro 'ALÇA' para a família '{family_name}'...")
-            count_before = len(products_list)
             
             # Filtra a lista, mantendo apenas os produtos cuja descrição NÃO contenha "ALÇA"
             # O .upper() garante que a verificação não diferencia maiúsculas de minúsculas
@@ -147,14 +149,20 @@ def get_products_by_family(connection, family_name):
                 if "ALÇA" not in product.get("description", "").upper()
             ]
             
-            count_after = len(products_list)
-            removed_count = count_before - count_after
-            if removed_count > 0:
-                print(f"    -> {removed_count} produto(s) com 'ALÇA' foi(ram) removido(s).")
-        ### FIM DO NOVO ###
         
+        if family_name == "MOD FIT":
+            
+            # Filtra a lista, mantendo apenas os produtos cuja descrição NÃO contenha "ALÇA"
+            # O .upper() garante que a verificação não diferencia maiúsculas de minúsculas
+            products_list = [
+                product for product in products_list
+                if "PCB" not in product.get("description", "").upper()
+            ]
+            
         # ETAPA 3: Retornar a lista (modificada ou não)
         return products_list
+    
+        
 
     except mysql.connector.Error as err:
         print(f"  -> Erro ao buscar dados para a família '{family_name}': {err}")
