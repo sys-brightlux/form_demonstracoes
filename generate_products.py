@@ -25,7 +25,8 @@ FAMILIES_TO_QUERY = [
     "HERM",
     "STREET",
     "MOD FIT",
-    "PAINEL LED"
+    "PAINEL LED",
+    "LUMINARIA LED MODULAR"
 ]
 
 def get_products_by_family(connection, family_name):
