@@ -26,7 +26,8 @@ FAMILIES_TO_QUERY = [
     "STREET",
     "MOD FIT",
     "PAINEL LED",
-    "LUMINARIA LED MODULAR"
+    "LUMINARIA LED MODULAR",
+    "HBMI PORTATIL",
 ]
 
 def get_products_by_family(connection, family_name):
@@ -59,7 +60,7 @@ def get_products_by_family(connection, family_name):
                 JOIN tabprecoitem AS tpi_inner ON p_inner.Pro_Codigo = tpi_inner.Pro_Codigo
                 WHERE
                     p_inner.Pro_Descricao LIKE %s
-                    AND pr_inner.Pro_RefSituacao = 'A' AND tpi_inner.TPrc_Codigo = 4 AND tpi_inner.TPrcItm_Valor > 1
+                    AND pr_inner.Pro_RefSituacao = 'A' AND tpi_inner.TPrc_Codigo = 4 AND tpi_inner.TPrcItm_Valor >= 0
                     AND LOCATE('W', p_inner.Pro_Descricao) > 0
                 GROUP BY Inner_Agg_Desc
             ) AS min_prices
